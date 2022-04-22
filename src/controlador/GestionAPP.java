@@ -3,6 +3,7 @@ package controlador;
 import modelos.*;
 import vista.VistaAPP;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class GestionAPP {
@@ -47,7 +48,7 @@ public class GestionAPP {
         this.vista = new VistaAPP();
     }
 
-    //Métodos
+    //MÉTODOS
     //Carga datos de prueba
     public void cargaDatos(){
         usuarios.add(new Usuario("Angeles", "Civantos", "1234", "ang"));
@@ -55,11 +56,14 @@ public class GestionAPP {
         admins.add(new Admin("Laura", "valki", "1234", "akame"));
 
     }
-
+//TODO PROGRAMA
     //Iniciar programa
     public void  inicia() {
         int respuestaMenu = 0;
         boolean salida = false;
+        cargaUsuarios();
+        cargaTecnicos();
+        cargaAdmins();
         do {
             //MENÚ INICIO
             do {
@@ -179,6 +183,7 @@ public class GestionAPP {
                                     case 7:
                                         usuarioInicioSesion = null;
                                         cerrarSesionUsuario = true;
+                                        almacenaUsuarios();
                                         break;
                                     default:
                                         vista.errorOpcionMenu();
@@ -258,6 +263,8 @@ public class GestionAPP {
                                     //CERRAR SESIÓN
                                     case 6:
                                         cerrarSesionTecnico = true;
+                                        tecnicoInicioSesion = null;
+                                        almacenaTecnicos();
                                         break;
                                     default:
                                         vista.errorOpcionMenu();
@@ -371,6 +378,7 @@ public class GestionAPP {
                                             tecnicos.add(nuevoTecnico);
                                         }
                                         break;
+                                        //TODO CREAR BORRAR USUARIO
                                     //BORRAR TÉCNICO
                                     case 7:
                                         if (!tecnicos.isEmpty()) {
@@ -401,6 +409,8 @@ public class GestionAPP {
                                     //CERRAR SESIÓN
                                     case 10:
                                         cerrarSesionAdmin = true;
+                                        adminInicioSesion = null;
+                                        almacenaAdmins();
                                         break;
                                 }
                             } while (!cerrarSesionAdmin);
@@ -409,7 +419,6 @@ public class GestionAPP {
                         vista.errorInicioSesion();
                     }
                     break;
-                //TODO PROGRAMAR OPCIÓN 2
                 //REGISTRARSE
                 case 2:
                     int respuestaMenuRol = 0;
@@ -443,7 +452,6 @@ public class GestionAPP {
 
     }
 
-    //MÉTODOS
     //Log in
     public boolean logIn(String correo, String password) {
         boolean registrado = false;
@@ -763,5 +771,89 @@ public class GestionAPP {
             }
         }
         return incidenciasPorTermino;
+    }
+
+    //T6
+    //Almacenar datos usuarios
+    public void almacenaUsuarios() {
+        //TODO NO LOS GUARDA BIEN
+        try {
+            ObjectOutputStream oop = new ObjectOutputStream(new FileOutputStream("resources/usuarios.dat"));
+            oop.writeObject(usuarios);
+            oop.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Almacenar datos técnicos
+    public void almacenaTecnicos() {
+        try {
+            ObjectOutputStream oop = new ObjectOutputStream(new FileOutputStream("resources/tecnicos.dat"));
+            oop.writeObject(tecnicos);
+            oop.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Almacenar datos administradores
+    public void almacenaAdmins() {
+        try {
+            ObjectOutputStream oop = new ObjectOutputStream(new FileOutputStream("resources/admins.dat"));
+            oop.writeObject(admins);
+            oop.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Cargar datos usuarios
+    public void cargaUsuarios(){
+        try {
+            ObjectInputStream oisUsuarios = new ObjectInputStream(new FileInputStream("resources/usuarios.dat"));
+            usuarios = (ArrayList<Usuario>) oisUsuarios.readObject();
+            oisUsuarios.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Cargar datos tecnicos
+    public void cargaTecnicos(){
+        try {
+            ObjectInputStream oisTecnicos = new ObjectInputStream(new FileInputStream("resources/tecnicos.dat"));
+            tecnicos = (ArrayList<Tecnico>) oisTecnicos.readObject();
+            oisTecnicos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Cargar datos administradores
+    public void cargaAdmins(){
+        try {
+            ObjectInputStream oisAdmins = new ObjectInputStream(new FileInputStream("resources/admins.dat"));
+            admins = (ArrayList<Admin>) oisAdmins.readObject();
+            oisAdmins.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,9 +1,10 @@
 package modelos;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Incidencia {
+public class Incidencia implements Serializable {
     //Atributos
     private int id;
     private String descripcion;

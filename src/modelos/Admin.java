@@ -1,8 +1,9 @@
 package modelos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Admin {
+public class Admin implements Serializable {
     //Atributos
     private int id;
     private String nombre;
