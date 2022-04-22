@@ -4,6 +4,7 @@ import modelos.*;
 import vista.VistaAPP;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class GestionAPP {
@@ -90,6 +91,7 @@ public class GestionAPP {
                             boolean cerrarSesionUsuario = false;
 
                             int respuestaMenuUsuario = 0;
+                            registraActividad("Inicio de sesión", usuarioInicioSesion.getNombre());
                             do {
                                 //MENÚ USUARIO
                                 do {
@@ -122,6 +124,7 @@ public class GestionAPP {
                                         //Aquí se crea una nueva incidencia con los datos pedidos y se almacena en el Arraylist
                                         if (insertaIncidencia(descripcion, prioridad, usuarioInicioSesion.getId())) {
                                             vista.mensajeIncidenciaRegistrada();
+                                            registraActividad("Nueva incidencia", usuarioInicioSesion.getNombre());
                                         } else {
                                             vista.errorIncidenciaRegistrada();
                                         }
@@ -181,6 +184,7 @@ public class GestionAPP {
                                         break;
                                     //CERRAR SESIÓN
                                     case 7:
+                                        registraActividad("Cierre de sesión", usuarioInicioSesion.getNombre());
                                         usuarioInicioSesion = null;
                                         cerrarSesionUsuario = true;
                                         almacenaUsuarios();
@@ -194,6 +198,7 @@ public class GestionAPP {
                             boolean cerrarSesionTecnico = false;
 
                             int respuestaMenuTecnico = 0;
+                            registraActividad("Inicio de sesión", tecnicoInicioSesion.getNombre());
                             do {
                                 //MENU TECNICO
                                 do {
@@ -230,6 +235,7 @@ public class GestionAPP {
 
                                             if (cierraIncidencia(tecnicoInicioSesion.getId(), numeroIncidencia, solucion)) {
                                                 vista.mensajeIncidenciaCerrada();
+                                                registraActividad("Incidencia cerrada", tecnicoInicioSesion.getNombre());
                                             } else {
                                                 vista.errorIncidenciaCerrada();
                                             }
@@ -262,6 +268,7 @@ public class GestionAPP {
                                         break;
                                     //CERRAR SESIÓN
                                     case 6:
+                                        registraActividad("Cierre de sesión", tecnicoInicioSesion.getNombre());
                                         cerrarSesionTecnico = true;
                                         tecnicoInicioSesion = null;
                                         almacenaTecnicos();
@@ -277,6 +284,7 @@ public class GestionAPP {
                             boolean cerrarSesionAdmin = false;
 
                             int respuestaMenuAdmin = 0;
+                            registraActividad("Inicio de sesión", adminInicioSesion.getNombre());
                             do {
                                 do {
                                     vista.muestraMenuAdmin(adminInicioSesion.getNombre(), buscaTodasIncidenciasAbiertas().size(), buscaTodasIncidenciasSinAsignar().size() );
@@ -355,6 +363,7 @@ public class GestionAPP {
 
                                             if (asignaIncidencia(incidenciaElegida, tencicoElegido)) {
                                                 vista.mensajeIncidenciaAsignada();
+                                                registraActividad("Asignación de incidencia", adminInicioSesion.getNombre());
                                             } else {
                                                 vista.errorNuevaIncidenciaAsignada();
 
@@ -408,6 +417,7 @@ public class GestionAPP {
                                         break;
                                     //CERRAR SESIÓN
                                     case 10:
+                                        registraActividad("Cierre de sesión", adminInicioSesion.getNombre());
                                         cerrarSesionAdmin = true;
                                         adminInicioSesion = null;
                                         almacenaAdmins();
@@ -853,6 +863,17 @@ public class GestionAPP {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Registrar actividad
+    public void registraActividad(String actividad, String nombre) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("resources/actividad.log", true));
+            bw.write(actividad + " / " + nombre + " / " + LocalDateTime.now() + "\n");
+            bw.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
