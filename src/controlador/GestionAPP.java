@@ -6,6 +6,7 @@ import vista.VistaAPP;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class GestionAPP {
 
@@ -55,7 +56,6 @@ public class GestionAPP {
         usuarios.add(new Usuario("Angeles", "Civantos", "1234", "ang"));
         tecnicos.add(new Tecnico("Daniel", "Cabezas", "1234", "dani"));
         admins.add(new Admin("Laura", "valki", "1234", "akame"));
-
     }
 //TODO PROGRAMA
     //Iniciar programa
@@ -91,11 +91,11 @@ public class GestionAPP {
                             boolean cerrarSesionUsuario = false;
 
                             int respuestaMenuUsuario = 0;
-                            registraActividad("Inicio de sesión", usuarioInicioSesion.getNombre());
+                            almacenaActividad("Inicio de sesión", usuarioInicioSesion.getNombre());
                             do {
                                 //MENÚ USUARIO
                                 do {
-                                    vista.muestraMenuUsuario(usuarioInicioSesion.getNombre(), usuarioInicioSesion.buscaIncidenciasSinAsignar(),usuarioInicioSesion.buscaIncidenciasAsignadas());
+                                    vista.muestraMenuUsuario(usuarioInicioSesion.getNombre(), usuarioInicioSesion.buscaIncidenciasSinAsignar(),usuarioInicioSesion.buscaIncidenciasAsignadas(), cargaInicioSesion(usuarioInicioSesion.getNombre()));
                                     try {
                                         respuestaMenuUsuario = vista.pideDatosEnteros("opción");
                                     } catch (NumberFormatException e) {
@@ -124,7 +124,7 @@ public class GestionAPP {
                                         //Aquí se crea una nueva incidencia con los datos pedidos y se almacena en el Arraylist
                                         if (insertaIncidencia(descripcion, prioridad, usuarioInicioSesion.getId())) {
                                             vista.mensajeIncidenciaRegistrada();
-                                            registraActividad("Nueva incidencia", usuarioInicioSesion.getNombre());
+                                            almacenaActividad("Nueva incidencia", usuarioInicioSesion.getNombre());
                                         } else {
                                             vista.errorIncidenciaRegistrada();
                                         }
@@ -184,7 +184,8 @@ public class GestionAPP {
                                         break;
                                     //CERRAR SESIÓN
                                     case 7:
-                                        registraActividad("Cierre de sesión", usuarioInicioSesion.getNombre());
+                                        almacenaActividad("Cierre de sesión", usuarioInicioSesion.getNombre());
+                                        almacenaInicioSesion(usuarioInicioSesion.getNombre());
                                         usuarioInicioSesion = null;
                                         cerrarSesionUsuario = true;
                                         almacenaUsuarios();
@@ -198,7 +199,7 @@ public class GestionAPP {
                             boolean cerrarSesionTecnico = false;
 
                             int respuestaMenuTecnico = 0;
-                            registraActividad("Inicio de sesión", tecnicoInicioSesion.getNombre());
+                            almacenaActividad("Inicio de sesión", tecnicoInicioSesion.getNombre());
                             do {
                                 //MENU TECNICO
                                 do {
@@ -235,7 +236,7 @@ public class GestionAPP {
 
                                             if (cierraIncidencia(tecnicoInicioSesion.getId(), numeroIncidencia, solucion)) {
                                                 vista.mensajeIncidenciaCerrada();
-                                                registraActividad("Incidencia cerrada", tecnicoInicioSesion.getNombre());
+                                                almacenaActividad("Incidencia cerrada", tecnicoInicioSesion.getNombre());
                                             } else {
                                                 vista.errorIncidenciaCerrada();
                                             }
@@ -268,7 +269,8 @@ public class GestionAPP {
                                         break;
                                     //CERRAR SESIÓN
                                     case 6:
-                                        registraActividad("Cierre de sesión", tecnicoInicioSesion.getNombre());
+                                        almacenaActividad("Cierre de sesión", tecnicoInicioSesion.getNombre());
+                                        almacenaInicioSesion(tecnicoInicioSesion.getNombre());
                                         cerrarSesionTecnico = true;
                                         tecnicoInicioSesion = null;
                                         almacenaTecnicos();
@@ -284,16 +286,16 @@ public class GestionAPP {
                             boolean cerrarSesionAdmin = false;
 
                             int respuestaMenuAdmin = 0;
-                            registraActividad("Inicio de sesión", adminInicioSesion.getNombre());
+                            almacenaActividad("Inicio de sesión", adminInicioSesion.getNombre());
                             do {
                                 do {
-                                    vista.muestraMenuAdmin(adminInicioSesion.getNombre(), buscaTodasIncidenciasAbiertas().size(), buscaTodasIncidenciasSinAsignar().size() );
+                                    vista.muestraMenuAdmin(adminInicioSesion.getNombre(), buscaTodasIncidenciasAbiertas().size(), buscaTodasIncidenciasSinAsignar().size());
                                     try {
                                         respuestaMenuAdmin = vista.pideDatosEnteros("opción");
                                     } catch (NumberFormatException e) {
                                         vista.errorDatoOpcionMenu();
                                     }
-                                } while (respuestaMenuAdmin <= 0 || respuestaMenuAdmin > 10);
+                                } while (respuestaMenuAdmin <= 0 || respuestaMenuAdmin > 11);
 
                                 switch (respuestaMenuAdmin) {
                                     //CONSULTAR INCIDENCIAS ABIERTAS (SISTEMA COMPLETO)
@@ -344,7 +346,6 @@ public class GestionAPP {
                                         } else {
                                             vista.errorTecnicoRegistrado();
                                         }
-
                                         break;
                                     //ASIGNAR INCIDENCIA
                                     case 5:
@@ -363,7 +364,7 @@ public class GestionAPP {
 
                                             if (asignaIncidencia(incidenciaElegida, tencicoElegido)) {
                                                 vista.mensajeIncidenciaAsignada();
-                                                registraActividad("Asignación de incidencia", adminInicioSesion.getNombre());
+                                                almacenaActividad("Asignación de incidencia", adminInicioSesion.getNombre());
                                             } else {
                                                 vista.errorNuevaIncidenciaAsignada();
 
@@ -387,7 +388,6 @@ public class GestionAPP {
                                             tecnicos.add(nuevoTecnico);
                                         }
                                         break;
-                                        //TODO CREAR BORRAR USUARIO
                                     //BORRAR TÉCNICO
                                     case 7:
                                         if (!tecnicos.isEmpty()) {
@@ -413,11 +413,30 @@ public class GestionAPP {
                                             System.out.println(usuario);
                                         }
                                         break;
+                                    //BORRAR USUARIO
                                     case 9:
+                                        if (!usuarios.isEmpty()) {
+                                            for (int i = 0; i < usuarios.size(); i++) {
+                                                System.out.println("\n <- Usuario nº: " + (i + 1) + " ->");
+                                                System.out.println(usuarios.get(i));
+                                            }
+                                            int usuarioElegido = vista.pideDatosEnteros("el número del usuario");
+
+                                            if (borraUsuario(usuarioElegido)) {
+                                                vista.mensajeUsuarioBorrado();
+                                            } else {
+                                                vista.errorBorrarUsuario();
+                                            }
+                                        }
+                                        break;
+                                    //MOSTRAR ESTADÍSTICAS DEL SISTEMA
+                                    case 10:
+                                        vista.muestraEstadisticas(usuarios.size(), tecnicos.size(), admins.size(), buscaTodasIncidenciasAbiertas().size(), buscaTodasIncidenciasCerradas().size(), buscaTodasIncidenciasAsignadas().size(), buscaTodasIncidenciasSinAsignar().size());
                                         break;
                                     //CERRAR SESIÓN
-                                    case 10:
-                                        registraActividad("Cierre de sesión", adminInicioSesion.getNombre());
+                                    case 11:
+                                        almacenaActividad("Cierre de sesión", adminInicioSesion.getNombre());
+                                        almacenaInicioSesion(adminInicioSesion.getNombre());
                                         cerrarSesionAdmin = true;
                                         adminInicioSesion = null;
                                         almacenaAdmins();
@@ -434,7 +453,13 @@ public class GestionAPP {
                     int respuestaMenuRol = 0;
                     String nombre = vista.pideDatosString("nombre");
                     String apellido = vista.pideDatosString("apellido");
-                    String clave = vista.pideDatosString("contraseña");
+                    String clave;
+                    String comprobacionClave;
+                    do {
+                        clave = vista.pideDatosString("contraseña");
+                        comprobacionClave = vista.pideDatosString("de nuevo su contraseña");
+                    } while (!compruebaPassword(clave, comprobacionClave));
+
                     String email = vista.pideDatosString("correo electrónico");
 
                     do {
@@ -445,13 +470,23 @@ public class GestionAPP {
                             vista.errorOpcionMenu();
                         }
                     } while (respuestaMenuRol <= 0 || respuestaMenuRol > 2);
-                    if (insertaUsuario(nombre,apellido,clave,email,respuestaMenuRol)) {
-                        vista.mensajeUsuarioRegistrado();
-                    } else {
-                        vista.errorUsuarioRegistrado();
+
+                    if (respuestaMenuRol == 1) {
+                        if (!buscaCorreoRegistradoUsuarios(email)) {
+                            if (insertaUsuario(nombre,apellido,clave,email,respuestaMenuRol)) {
+                                vista.mensajeUsuarioRegistrado();
+                            } else {
+                                vista.errorUsuarioRegistrado();
+                            }
+                        } else {
+                            vista.errorCrearUsuario();
+                        }
                     }
                     break;
                 case 3:
+                    almacenaUsuarios();
+                    almacenaTecnicos();
+                    almacenaAdmins();
                     salida = true;
                     break;
                 default:
@@ -525,6 +560,25 @@ public class GestionAPP {
         return null;
     }
 
+    //Buscar correo registrado usuarios
+    public boolean buscaCorreoRegistradoUsuarios(String correo) {
+        for (Usuario usuario: usuarios) {
+            if (usuario.getEmail().equals(correo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Comprobar correo
+    public boolean compruebaPassword(String password, String comprobacionPassword) {
+        if (password.equals(comprobacionPassword)) {
+            return true;
+        }
+        vista.errorClaveDistinta();
+        return false;
+    }
+
     //Insertar usuario
     public boolean insertaUsuario(String nombre, String apellido, String clave, String email, int rol) {
 
@@ -553,8 +607,6 @@ public class GestionAPP {
                 }
             }
         }
-
-
         return false;
     }
 
@@ -591,6 +643,20 @@ public class GestionAPP {
         }
 
         return incidenciasAsignadas;
+    }
+
+    //Buscar todas las incidencias asignadas
+    public ArrayList<IncidenciaDataClass> buscaTodasIncidenciasAsignadas() {
+        ArrayList<IncidenciaDataClass> incidenciasSinAsignar = new ArrayList<IncidenciaDataClass>();
+        for (Usuario usuario: usuarios) {
+            for (Incidencia incidencia: usuario.getIncidencias()) {
+                if (incidencia.isEstaAsignada()) {
+                    IncidenciaDataClass dataClass = new IncidenciaDataClass(incidencia.getId(), incidencia.getDescripcion(), incidencia.getSolucion(),incidencia.getPrioridad(),incidencia.isEstaResuelta(),incidencia.getFechaInicio(), incidencia.getFechaFin(),incidencia.diasAbierta(), incidencia.getIdUsuario(), usuario.getNombre(), usuario.getEmail());
+                    incidenciasSinAsignar.add(dataClass);
+                }
+            }
+        }
+        return incidenciasSinAsignar;
     }
 
     //Buscar todas las incidencias sin asignar
@@ -659,6 +725,20 @@ public class GestionAPP {
         return incidenciasAbiertas;
     }
 
+    //Buscar todas las incidencias cerradas
+    public ArrayList<IncidenciaDataClass> buscaTodasIncidenciasCerradas() {
+        ArrayList<IncidenciaDataClass> incidenciasAbiertas = new ArrayList<IncidenciaDataClass>();
+        for (Usuario usuario: usuarios) {
+            for (Incidencia incidencia: usuario.getIncidencias()) {
+                if (incidencia.isEstaResuelta()) {
+                    IncidenciaDataClass dataClass = new IncidenciaDataClass(incidencia.getId(), incidencia.getDescripcion(), incidencia.getSolucion(),incidencia.getPrioridad(),incidencia.isEstaResuelta(),incidencia.getFechaInicio(), incidencia.getFechaFin(), incidencia.diasAbierta(),incidencia.getIdUsuario(), usuario.getNombre(), usuario.getEmail());
+                    incidenciasAbiertas.add(dataClass);
+                }
+            }
+        }
+        return incidenciasAbiertas;
+    }
+
     //Buscar incidencias cerradas por técnico
     public ArrayList<IncidenciaDataClass> buscaIncidenciasCerradasPorTecnico(int numeroTecnico) {
         ArrayList<IncidenciaDataClass> incidenciasCerradas = new ArrayList<>();
@@ -693,6 +773,18 @@ public class GestionAPP {
             }
         }
         return existe;
+    }
+
+    //Borrar usuario
+    public boolean borraUsuario(int numeroUsuario) {
+        Usuario usuario = usuarios.get(numeroUsuario - 1);
+
+        if (usuario != null) {
+            usuarios.remove(usuario);
+            return true;
+        }
+
+        return false;
     }
 
     //Borrar técnico
@@ -786,7 +878,6 @@ public class GestionAPP {
     //T6
     //Almacenar datos usuarios
     public void almacenaUsuarios() {
-        //TODO NO LOS GUARDA BIEN
         try {
             ObjectOutputStream oop = new ObjectOutputStream(new FileOutputStream("resources/usuarios.dat"));
             oop.writeObject(usuarios);
@@ -867,8 +958,8 @@ public class GestionAPP {
         }
     }
 
-    //Registrar actividad
-    public void registraActividad(String actividad, String nombre) {
+    //Almacenar actividad
+    public void almacenaActividad(String actividad, String nombre) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter("resources/actividad.log", true));
             bw.write(actividad + " / " + nombre + " / " + LocalDateTime.now() + "\n");
@@ -876,5 +967,31 @@ public class GestionAPP {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //Almacenar último inicio de sesión usuarios
+    public void almacenaInicioSesion(String nombre) {
+        Properties properties = new Properties();
+        try {
+            FileOutputStream fos = new FileOutputStream("resources/inicioSesion.properties");
+            properties.store(fos, "Inicios de sesión en el sistema");
+            properties.load(new FileInputStream("resources/inicioSesion.properties"));
+            properties.setProperty(nombre, LocalDateTime.now().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Obtener último inicio de sesión
+    public String cargaInicioSesion(String nombre){
+        Properties properties = new Properties();
+        String inicioSesion = "";
+        try {
+            properties.load(new FileInputStream("resources/inicioSesion.properties"));
+            inicioSesion = properties.getProperty(nombre);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return inicioSesion;
     }
 }

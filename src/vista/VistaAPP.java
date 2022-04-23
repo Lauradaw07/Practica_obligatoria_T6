@@ -55,7 +55,7 @@ public class VistaAPP {
     }
 
     //MENU USUARIO
-    public void muestraMenuUsuario(String nombre, int incidenciasSinAsignar, int incidenciasAdignadas) {
+    public void muestraMenuUsuario(String nombre, int incidenciasSinAsignar, int incidenciasAdignadas, String inicioSesion) {
         System.out.println("""
                 
                 ╔═════════════════════════════════════════════════════════════════════════╗
@@ -64,6 +64,7 @@ public class VistaAPP {
                 """);
         System.out.println(" Bienvenidx " + nombre + " tiene usted perfil de usuario normal");
         System.out.println(" Actualmente, tiene " + incidenciasSinAsignar + " incidencias sin asignar y " + incidenciasAdignadas + " incidencias ya asignadas");
+        System.out.println(" La última vez que inició sesión fue: " + inicioSesion);
         System.out.println("""
                 
                       «-------------------------------------------------------------»
@@ -126,7 +127,6 @@ public class VistaAPP {
         System.out.println(" Bienvenidx " + nombre + " tiene usted perfil de administrador");
         System.out.println(" Actualmente, hay " + incidenciasAbiertas + " incidencias abiertas, de las cuales \n " +
                 " " + incidenciasSinAsignar + " no están asignadas a ningún técnico");
-        //TODO INSERTAR BARRA DE ESTADO ADMINISTRADORES
         System.out.println("""
 
                       «-------------------------------------------------------------»
@@ -146,10 +146,14 @@ public class VistaAPP {
                       «-------------------------------------------------------------»
                         [8]  Consultar los usuarios
                       «-------------------------------------------------------------»
-                        [9]  Estadísticas de la aplicación  
+                        [9]  Borrar usuario
                       «-------------------------------------------------------------»
-                        [10]  Cerrar sesión
+                        [10]  Estadísticas de la aplicación  
                       «-------------------------------------------------------------»
+                        [11]  Cerrar sesión
+                      «-------------------------------------------------------------»
+                      
+                ╚═════════════════════════════════════════════════════════════════════════╝
                 """);
     }
 
@@ -180,6 +184,25 @@ public class VistaAPP {
                 """);
     }
 
+    public void muestraEstadisticas(int usuariosRegistrados, int tecnicosRegistrados, int adminsRegistrados, int incidenciasAbiertas, int incidenciasCerradas, int incidenciasAsignadas, int incidenciasSinAsignar) {
+        System.out.println("""
+                
+                ╔════════════════════════════════════════════════════════════════════╗
+                  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡   ESTADÍSTICAS DEL SISTEMA   ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+                """);
+        System.out.println("    Usuarios registrados: " + usuariosRegistrados);
+        System.out.println("    Técnicos registrados: " + tecnicosRegistrados);
+        System.out.println("    Administradores registrados: " + adminsRegistrados);
+        System.out.println("    Incidencias abiertas: " + incidenciasAbiertas);
+        System.out.println("    Incidencias cerradas: " + incidenciasCerradas);
+        System.out.println("    Incidencias asignadas a técnicos: " + incidenciasAsignadas);
+        System.out.println("    Incidencias sin asignar: " + incidenciasSinAsignar);
+        System.out.println("""
+                
+                ╚════════════════════════════════════════════════════════════════════╝
+                """);
+    }
+
     //Barra de estado usuario
     public void muestraBarraEstadoUsuario(int incidenciasAbiertas, int incidenciasAsignadas) {
         System.out.println("Actualmente tiene " + incidenciasAbiertas + " sin asignar y " + incidenciasAsignadas + "incidencias asignadas");
@@ -187,7 +210,7 @@ public class VistaAPP {
 
     //Mensajes
     public void mensajeUsuarioRegistrado() {
-        System.out.println("\n------ Usuario registrado con éxito ------" + ANSI_RESET);
+        System.out.println(ANSI_GREEN + "\n------ Usuario registrado con éxito ------" + ANSI_RESET);
     }
 
     public void mensajeIncidenciaRegistrada() {
@@ -196,6 +219,10 @@ public class VistaAPP {
 
     public void mensajeIncidenciaCerrada() {
         System.out.println(ANSI_GREEN + "\n------ Incidencia cerrada correctamente ------" + ANSI_RESET);
+    }
+
+    public void mensajeUsuarioBorrado() {
+        System.out.println(ANSI_GREEN + "\n------ Usuario borrado con éxito ------" + ANSI_RESET);
     }
 
     public void mensajeTecnicoBorrado() {
@@ -208,6 +235,10 @@ public class VistaAPP {
 
 
     //Errores
+    public void errorClaveDistinta() {
+        System.out.println(ANSI_RED + "\n------ERROR: Las contraseñas son diferentes------\n" + ANSI_RESET);
+    }
+
     public void errorUsuarioRegistrado() {
         System.out.println(ANSI_RED + "\n------ERROR: No se ha podido registrar al usuario------" + ANSI_RESET);
     }
@@ -240,12 +271,20 @@ public class VistaAPP {
         System.out.println(ANSI_RED + "\n------ERROR: No existen incidencias cerradas registradas------" + ANSI_RESET);
     }
 
+    public void errorCrearUsuario() {
+        System.out.println(ANSI_RED + "\n------ERROR: Ya existe un usuario con este email en el sistema------" + ANSI_RESET);
+    }
+
     public void errorCrearTecnico() {
         System.out.println(ANSI_RED + "\n------ERROR: Ya existe un técnico con este email en el sistema------" + ANSI_RESET);
     }
 
     public void errorBorrarTecnico() {
         System.out.println(ANSI_RED + "\n------ERROR: No se ha podido borrar al técnico------" + ANSI_RESET);
+    }
+
+    public void errorBorrarUsuario() {
+        System.out.println(ANSI_RED + "\n------ERROR: No se ha podido borrar al usuario------" + ANSI_RESET);
     }
 
     public void errorNuevaIncidenciaAsignada() {
