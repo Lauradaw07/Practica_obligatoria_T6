@@ -64,7 +64,7 @@ public class VistaAPP {
                 """);
         System.out.println(" Bienvenidx " + nombre + " tiene usted perfil de usuario normal");
         System.out.println(" Actualmente, tiene " + incidenciasSinAsignar + " incidencias sin asignar y " + incidenciasAdignadas + " incidencias ya asignadas");
-        System.out.println(" La última vez que inició sesión fue: " + inicioSesion);
+        System.out.println(" La última vez que inició sesión fue: " + ((inicioSesion != null) ? inicioSesion : "Primera vez iniciando sesión"));
         System.out.println("""
                 
                       «-------------------------------------------------------------»

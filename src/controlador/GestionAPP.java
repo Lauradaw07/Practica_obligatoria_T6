@@ -4,8 +4,10 @@ import modelos.*;
 import vista.VistaAPP;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Properties;
 
 public class GestionAPP {
@@ -55,7 +57,7 @@ public class GestionAPP {
     public void cargaDatos(){
         usuarios.add(new Usuario("Angeles", "Civantos", "1234", "ang"));
         tecnicos.add(new Tecnico("Daniel", "Cabezas", "1234", "dani"));
-        admins.add(new Admin("Laura", "valki", "1234", "akame"));
+        admins.add(new Admin("Laura", "valki", "1234", "valki"));
     }
 //TODO PROGRAMA
     //Iniciar programa
@@ -139,7 +141,11 @@ public class GestionAPP {
                                             }
 
                                             int numeroIncidencia = vista.pideDatosEnteros("el número de la incidencia que quiere borrar");
-                                            usuarioInicioSesion.borraIncidencia(numeroIncidencia);
+                                            if (usuarioInicioSesion.borraIncidencia(numeroIncidencia)) {
+                                                vista.mensajeIncidenciaRegistrada();
+                                            } else {
+                                                vista.errorIncidenciaRegistrada();
+                                            }
                                         } else {
                                             vista.errorIncidenciaRegistrada();
                                         }
@@ -973,10 +979,24 @@ public class GestionAPP {
     public void almacenaInicioSesion(String nombre) {
         Properties properties = new Properties();
         try {
-            FileOutputStream fos = new FileOutputStream("resources/inicioSesion.properties");
-            properties.store(fos, "Inicios de sesión en el sistema");
-            properties.load(new FileInputStream("resources/inicioSesion.properties"));
-            properties.setProperty(nombre, LocalDateTime.now().toString());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+            String hora = sdf.format(Calendar.getInstance().getTime());
+
+            properties.load(new FileInputStream("./resources/inicioSesion.properties"));
+
+//            String primeraVezCargado = properties.getProperty("primeraVez");
+            properties.setProperty(nombre, hora);
+            properties.store(new FileWriter("./resources/inicioSesion.properties"), "Inicios de sesión en el sistema");
+//            if (primeraVezCargado == null) {
+//                properties.setProperty("primeraVez","true");
+//
+//            } else {
+//                properties.setProperty(nombre, hora);
+//                properties.store(new FileWriter("./resources/inicioSesion.properties",true),"");
+//
+//            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -987,7 +1007,7 @@ public class GestionAPP {
         Properties properties = new Properties();
         String inicioSesion = "";
         try {
-            properties.load(new FileInputStream("resources/inicioSesion.properties"));
+            properties.load(new FileInputStream("./resources/inicioSesion.properties"));
             inicioSesion = properties.getProperty(nombre);
         } catch (Exception e) {
             e.printStackTrace();
