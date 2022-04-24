@@ -150,7 +150,9 @@ public class VistaAPP {
                       «-------------------------------------------------------------»
                         [10]  Estadísticas de la aplicación  
                       «-------------------------------------------------------------»
-                        [11]  Cerrar sesión
+                        [11] Consultar inicios de sesión en el sistema
+                      «-------------------------------------------------------------»
+                        [12]  Cerrar sesión
                       «-------------------------------------------------------------»
                       
                 ╚═════════════════════════════════════════════════════════════════════════╝
@@ -297,5 +299,9 @@ public class VistaAPP {
 
     public void errorIncidenciaPorTermino() {
         System.out.println(ANSI_RED + "\n------ERROR: No se ha encontrado ninguna incidencia------" + ANSI_RESET);
+    }
+
+    public void errorDatoRegistrado() {
+        System.out.println(ANSI_RED + "\n------ERROR: No existe ningún dato registrado------\n" + ANSI_RESET);
     }
 }

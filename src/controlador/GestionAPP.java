@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.Properties;
 
 public class GestionAPP {
@@ -439,8 +440,12 @@ public class GestionAPP {
                                     case 10:
                                         vista.muestraEstadisticas(usuarios.size(), tecnicos.size(), admins.size(), buscaTodasIncidenciasAbiertas().size(), buscaTodasIncidenciasCerradas().size(), buscaTodasIncidenciasAsignadas().size(), buscaTodasIncidenciasSinAsignar().size());
                                         break;
-                                    //CERRAR SESIÓN
+                                    //MOSTRAR INICIOS DE SESIÓN DEL SISTEMA
                                     case 11:
+                                        cargaTodosIniciosSesion();
+                                        break;
+                                    //CERRAR SESIÓN
+                                    case 12:
                                         almacenaActividad("Cierre de sesión", adminInicioSesion.getNombre());
                                         almacenaInicioSesion(adminInicioSesion.getNombre());
                                         cerrarSesionAdmin = true;
@@ -1013,5 +1018,29 @@ public class GestionAPP {
             e.printStackTrace();
         }
         return inicioSesion;
+    }
+
+    //Obtener todos los inicios de sesión
+    public void cargaTodosIniciosSesion() {
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileReader("./resources/inicioSesion.properties"));
+            //Keys devuelve todas las claves del fichero
+            Enumeration<Object> claves = properties.keys();
+            //Aquí se compruebea que el fichero no esté vacío
+            if (claves.hasMoreElements()) {
+                while (claves.hasMoreElements()) {
+                    Object clave = claves.nextElement();
+                    System.out.println(clave.toString() + ": " + properties.get(clave).toString() );
+                }
+                System.out.println();
+            } else {
+                vista.errorDatoRegistrado();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
